@@ -123,6 +123,9 @@ class Network:
         f = open(file_name, 'rb')
         self.layers = pickle.load(f, encoding='latin1')
         f.close()
+        print('Weights were loaded from the file')
+        print('-----')
+        
 
     def accu(self, testing):
         """The lowest precision digit and total"""
