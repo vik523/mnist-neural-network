@@ -15,21 +15,6 @@ from scipy import special
 import numpy as np
 
 
-# =====================
-#    Initialisation
-# =====================
-
-# Initialisation - Import from MNIST database
-START_TIME = time.time()
-ft = gzip.open('data_training', 'rb')
-TRAINING = pickle.load(ft)
-ft.close()
-ft = gzip.open('data_testing', 'rb')
-TESTING = pickle.load(ft)
-ft.close()
-
-print('Import duration '+str(round((time.time() - START_TIME), 2))+'s')
-print('----')
 
 # =====================
 #     Network class
@@ -67,6 +52,8 @@ class Network:
 
         # Performs iterations
         while self.same < 10:
+            if self.iteration > 5:
+                break
             for input_vector, target_vector in zip(inputs, targets):
                 self.backpropagate(input_vector, target_vector)
             # Messages and backups
@@ -150,18 +137,6 @@ class Network:
         min_c = sorted(range(len(each)), key=lambda k: each[k])[0]
         return np.round([each[min_c]*100, total[0]/total[1]*100, min_c], 2)
 
-nt1=Network(300)
-nt1.train(600,TRAINING)
-
-# =====================
-#   Display fonctions
-# =====================
-
-# Rounding off the prints and scientific notation
-np.set_printoptions(precision=2)
-np.set_printoptions(suppress=True)
-
-
 def find(c, network):
     x = randint(0, 999)
     while TESTING[1][x] != c:
@@ -226,3 +201,31 @@ def aff2(x, *network):
         pred = nt.predict(char)
         print('Prediction = ' + str(np.argmax(pred)))
         print(pred)
+
+if __name__ == '__main__':
+    # =====================
+    #    Initialisation
+    # =====================
+
+    # Initialisation - Import from MNIST database
+    START_TIME = time.time()
+    ft = gzip.open('data_training', 'rb')
+    TRAINING = pickle.load(ft)
+    ft.close()
+    ft = gzip.open('data_testing', 'rb')
+    TESTING = pickle.load(ft)
+    ft.close()
+
+    print('Import duration '+str(round((time.time() - START_TIME), 2))+'s')
+    print('----')
+    nt1=Network(300)
+    nt1.train(600,TRAINING)
+
+    # =====================
+    #   Display fonctions
+    # =====================
+
+    # Rounding off the prints and scientific notation
+    np.set_printoptions(precision=2)
+    np.set_printoptions(suppress=True)
+    nt1.sauv('model.net')
